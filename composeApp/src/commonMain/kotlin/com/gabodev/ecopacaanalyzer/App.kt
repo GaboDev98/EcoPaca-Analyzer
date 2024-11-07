@@ -17,8 +17,13 @@ fun App(viewModel: PacaViewModel) {
             })
         }
         composable("readings/{userId}") { backStackEntry ->
-            val userId = backStackEntry.arguments?.getString("userId") ?: ""
-            ReadingsScreen(viewModel = viewModel, userId = userId)
+            val userId = backStackEntry.arguments?.getString("userId").orEmpty()
+            ReadingsScreen(viewModel = viewModel, userId = userId, navController = navController)
+        }
+        composable("readingDetail/{userId}/{readingId}") { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId").orEmpty()
+            val readingId = backStackEntry.arguments?.getString("readingId").orEmpty()
+            ReadingDetailScreen(viewModel = viewModel, userId = userId, readingId = readingId)
         }
     }
 }
