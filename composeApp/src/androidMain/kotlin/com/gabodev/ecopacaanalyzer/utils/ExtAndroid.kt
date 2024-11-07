@@ -6,6 +6,6 @@ import java.util.Locale
 
 actual fun Long.toFormattedDate(): String {
     val date = Date(this * 1000)
-    val format = SimpleDateFormat("EEE, dd 'of' MMM, yyyy", Locale.getDefault())
+    val format = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
     return format.format(date)
 }
