@@ -1,4 +1,4 @@
-package com.gabodev.ecopaanalyzer
+package com.gabodev.ecopacaanalyzer
 
 import platform.UIKit.UIDevice
 

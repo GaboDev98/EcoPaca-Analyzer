@@ -1,4 +1,4 @@
-package com.gabodev.ecopaanalyzer
+package com.gabodev.ecopacaanalyzer
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -7,11 +7,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 
 class MainActivity : ComponentActivity() {
+    private val viewModel by lazy { PacaViewModel(FirebasePacaRepository()) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            App()
+            App(viewModel)
         }
     }
 }
@@ -19,5 +20,6 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 fun AppAndroidPreview() {
-    App()
+    val viewModel by lazy { PacaViewModel(FirebasePacaRepository()) }
+    App(viewModel)
 }

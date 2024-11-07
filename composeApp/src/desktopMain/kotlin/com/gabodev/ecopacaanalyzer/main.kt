@@ -1,4 +1,4 @@
-package com.gabodev.ecopaanalyzer
+package com.gabodev.ecopacaanalyzer
 
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application

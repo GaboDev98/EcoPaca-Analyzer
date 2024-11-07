@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.googleServices)
 }
 
 kotlin {
@@ -42,6 +43,7 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material)
             implementation(compose.ui)
+            implementation(libs.navigation.compose)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
@@ -55,11 +57,11 @@ kotlin {
 }
 
 android {
-    namespace = "com.gabodev.ecopaanalyzer"
+    namespace = "com.gabodev.ecopacaanalyzer"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.gabodev.ecopaanalyzer"
+        applicationId = "com.gabodev.ecopacaanalyzer"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
@@ -82,16 +84,18 @@ android {
 }
 
 dependencies {
+    implementation(libs.firebase.common.ktx)
+    implementation(libs.firebase.database.ktx)
     debugImplementation(compose.uiTooling)
 }
 
 compose.desktop {
     application {
-        mainClass = "com.gabodev.ecopaanalyzer.MainKt"
+        mainClass = "com.gabodev.ecopacaanalyzer.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.gabodev.ecopaanalyzer"
+            packageName = "com.gabodev.ecopacaanalyzer"
             packageVersion = "1.0.0"
         }
     }

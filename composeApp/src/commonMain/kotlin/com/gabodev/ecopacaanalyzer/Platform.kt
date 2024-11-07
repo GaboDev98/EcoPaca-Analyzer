@@ -1,4 +1,4 @@
-package com.gabodev.ecopaanalyzer
+package com.gabodev.ecopacaanalyzer
 
 interface Platform {
     val name: String

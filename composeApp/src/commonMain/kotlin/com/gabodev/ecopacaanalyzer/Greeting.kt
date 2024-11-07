@@ -1,4 +1,4 @@
-package com.gabodev.ecopaanalyzer
+package com.gabodev.ecopacaanalyzer
 
 class Greeting {
     private val platform = getPlatform()
