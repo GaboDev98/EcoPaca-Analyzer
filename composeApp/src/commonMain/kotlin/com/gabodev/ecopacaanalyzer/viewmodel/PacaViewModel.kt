@@ -1,5 +1,7 @@
 package com.gabodev.ecopacaanalyzer
 
+import com.gabodev.ecopacaanalyzer.data.PacaRepository
+import com.gabodev.ecopacaanalyzer.data.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
