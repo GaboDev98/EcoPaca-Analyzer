@@ -9,20 +9,6 @@ import kotlinx.coroutines.withContext
 class FirebasePacaRepository : PacaRepository {
     private val database = FirebaseDatabase.getInstance()
 
-    override suspend fun getPacaReadings(): List<PacaReading> {
-        val snapshot =
-            database.getReference().child("UsersData/nDGkRbD2cfcdrIadyCmOeQaGi4I2/readings").get()
-                .await()
-        return snapshot.children.mapNotNull { dataSnapshot ->
-            val id = dataSnapshot.key ?: return@mapNotNull null
-            val humidity = dataSnapshot.child("humidity").getValue(String::class.java) ?: ""
-            val pressure = dataSnapshot.child("pressure").getValue(String::class.java) ?: ""
-            val temperature = dataSnapshot.child("temperature").getValue(String::class.java) ?: ""
-            val timestamp = dataSnapshot.child("timestamp").getValue(String::class.java) ?: ""
-            PacaReading(id, humidity, pressure, temperature, timestamp)
-        }
-    }
-
     override suspend fun getUsers(): List<User> {
         return withContext(Dispatchers.IO) {
             try {
@@ -43,7 +29,12 @@ class FirebasePacaRepository : PacaRepository {
                         val temperature =
                             readingSnapshot.child("temperature").getValue(String::class.java) ?: "0"
 
-                        val reading = Reading(humidity, pressure, temperature, timestamp)
+                        val reading = Reading(
+                            humidity = humidity,
+                            pressure = pressure,
+                            temperature = temperature,
+                            timestamp = timestamp
+                        )
                         readings[timestamp] = reading
                     }
 
@@ -73,13 +64,38 @@ class FirebasePacaRepository : PacaRepository {
                     val temperature =
                         readingSnapshot.child("temperature").getValue(String::class.java) ?: "0"
 
-                    val reading = Reading(humidity, pressure, temperature, timestamp)
+                    val reading = Reading(
+                        id = timestamp,
+                        humidity = humidity,
+                        pressure = pressure,
+                        temperature = temperature,
+                        timestamp = timestamp
+                    )
                     readings[timestamp] = reading
                 }
                 readings
             } catch (e: Exception) {
                 emptyMap()
             }
+        }
+    }
+
+    override suspend fun getReadingDetail(userId: String, readingId: String): Reading? {
+
+        val snapshot = database.getReference()
+            .child("UsersData/$userId/readings/$readingId")
+            .get()
+            .await()
+
+        return if (snapshot.exists()) {
+            val humidity = snapshot.child("humidity").getValue(String::class.java).orEmpty()
+            val pressure = snapshot.child("pressure").getValue(String::class.java).orEmpty()
+            val temperature = snapshot.child("temperature").getValue(String::class.java).orEmpty()
+            val timestamp = snapshot.child("timestamp").getValue(String::class.java).orEmpty()
+
+            Reading(readingId, humidity, pressure, temperature, timestamp)
+        } else {
+            null
         }
     }
 }

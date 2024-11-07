@@ -11,9 +11,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 
 @Composable
-fun ReadingsScreen(viewModel: PacaViewModel, userId: String) {
+fun ReadingsScreen(viewModel: PacaViewModel, userId: String, navController: NavHostController) {
     val readings = viewModel.readings.collectAsState().value
 
     LaunchedEffect(userId) {
@@ -25,7 +26,9 @@ fun ReadingsScreen(viewModel: PacaViewModel, userId: String) {
 
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(readings.values.toList()) { reading ->
-                ReadingItem(reading)
+                ReadingItem(reading) {
+                    navController.navigate("readingDetail/${userId}/${reading.id}")
+                }
             }
         }
     }
