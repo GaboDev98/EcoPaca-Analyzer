@@ -25,10 +25,10 @@ fun ReadingItem(reading: Reading, onClick: () -> Unit) {
         shape = MaterialTheme.shapes.medium
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text("Fecha: $formattedDate", style = MaterialTheme.typography.body1)
-            Text("Humedad: ${reading.humidity}", style = MaterialTheme.typography.body2)
-            Text("Presión: ${reading.pressure}", style = MaterialTheme.typography.body2)
-            Text("Temperatura: ${reading.temperature}", style = MaterialTheme.typography.body2)
+            Text("Fecha y hora: $formattedDate", style = MaterialTheme.typography.body2)
+            Text("Temperatura: ${reading.temperature} °C", style = MaterialTheme.typography.body2)
+            Text("Humedad: ${reading.humidity}%", style = MaterialTheme.typography.body2)
+            Text("Presión: ${reading.pressure} hPa", style = MaterialTheme.typography.body2)
         }
     }
 }
