@@ -1,13 +1,16 @@
 package com.gabodev.ecopacaanalyzer.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.gabodev.ecopacaanalyzer.utils.toFormattedDate
 import com.gabodev.ecopacaanalyzer.viewmodel.PacaViewModel
@@ -25,22 +28,63 @@ fun ReadingDetailScreen(
         viewModel.getReadingDetail(userId, readingId)
     }
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Text(text = "Detalle de la lectura", style = MaterialTheme.typography.h6)
-
-        Spacer(modifier = Modifier.height(16.dp))
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .background(Color.White)
+    ) {
+        Text(
+            text = "Detalle de la lectura",
+            style = MaterialTheme.typography.h6,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
 
         if (isLoading) {
-            CircularProgressIndicator(modifier = Modifier.padding(16.dp))
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
         } else {
-            reading?.let {
-                val formattedDate = it.timestamp.toLong().toFormattedDate()
-                Text(text = "Fecha: $formattedDate")
-                Text(text = "Humedad: ${it.humidity}")
-                Text(text = "Presión: ${it.pressure}")
-                Text(text = "Temperatura: ${it.temperature}")
-            } ?: run {
-                Text(text = "Datos no disponibles")
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .shadow(8.dp, shape = RoundedCornerShape(16.dp)),
+                elevation = 4.dp,
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(16.dp)
+                ) {
+                    reading?.let {
+                        val formattedDate = it.timestamp.toLong().toFormattedDate()
+                        Text(
+                            text = "Fecha: $formattedDate",
+                            style = MaterialTheme.typography.body1,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        Text(
+                            text = "Humedad: ${it.humidity}",
+                            style = MaterialTheme.typography.body1,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        Text(
+                            text = "Presión: ${it.pressure}",
+                            style = MaterialTheme.typography.body1,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        Text(
+                            text = "Temperatura: ${it.temperature}",
+                            style = MaterialTheme.typography.body1,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                    } ?: run {
+                        Text(
+                            text = "Datos no disponibles",
+                            style = MaterialTheme.typography.body2.copy(color = Color.Gray),
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                    }
+                }
             }
         }
     }
