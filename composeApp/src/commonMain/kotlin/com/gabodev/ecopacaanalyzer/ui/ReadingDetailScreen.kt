@@ -63,22 +63,22 @@ fun ReadingDetailScreen(
                         reading?.let {
                             val formattedDate = it.timestamp.toLong().toFormattedDate()
                             Text(
-                                text = "Fecha: $formattedDate",
+                                text = "Fecha y hora: $formattedDate",
                                 style = MaterialTheme.typography.body1,
                                 modifier = Modifier.padding(bottom = 8.dp)
                             )
                             Text(
-                                text = "Humedad: ${it.humidity}",
+                                text = "Temperatura: ${it.temperature} °C",
                                 style = MaterialTheme.typography.body1,
                                 modifier = Modifier.padding(bottom = 8.dp)
                             )
                             Text(
-                                text = "Presión: ${it.pressure}",
+                                text = "Humedad: ${it.humidity}%",
                                 style = MaterialTheme.typography.body1,
                                 modifier = Modifier.padding(bottom = 8.dp)
                             )
                             Text(
-                                text = "Temperatura: ${it.temperature}",
+                                text = "Presión: ${it.pressure} hPa",
                                 style = MaterialTheme.typography.body1,
                                 modifier = Modifier.padding(bottom = 8.dp)
                             )
