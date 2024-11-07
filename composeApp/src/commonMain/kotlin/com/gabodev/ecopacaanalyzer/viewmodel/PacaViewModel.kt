@@ -24,13 +24,18 @@ class PacaViewModel(private val repository: PacaRepository) {
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
+    private val _error = MutableStateFlow<Exception?>(null)
+    val error: StateFlow<Exception?> = _error
+
     fun loadUsers() {
         _isLoading.value = true
+        _error.value = null
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val usersFromFirebase = repository.getUsers()
                 _users.value = usersFromFirebase
             } catch (e: Exception) {
+                _error.value = e
             } finally {
                 _isLoading.value = false
             }
@@ -39,11 +44,13 @@ class PacaViewModel(private val repository: PacaRepository) {
 
     fun loadReadings(userId: String) {
         _isLoading.value = true
+        _error.value = null
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val readingsFromFirebase = repository.getReadings(userId)
                 _readings.value = readingsFromFirebase
             } catch (e: Exception) {
+                _error.value = e
             } finally {
                 _isLoading.value = false
             }
@@ -52,11 +59,13 @@ class PacaViewModel(private val repository: PacaRepository) {
 
     suspend fun getReadingDetail(userId: String, readingId: String) {
         _isLoading.value = true
+        _error.value = null
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val readingDetailFromFirebase = repository.getReadingDetail(userId, readingId)
                 _readingDetail.value = readingDetailFromFirebase
             } catch (e: Exception) {
+                _error.value = e
             } finally {
                 _isLoading.value = false
             }

@@ -1,6 +1,5 @@
-package com.gabodev.ecopacaanalyzer
+package com.gabodev.ecopacaanalyzer.data
 
-import com.gabodev.ecopacaanalyzer.data.PacaRepository
 import com.gabodev.ecopacaanalyzer.models.Reading
 import com.gabodev.ecopacaanalyzer.models.User
 import com.gabodev.ecopacaanalyzer.utils.orEmpty
@@ -42,7 +41,7 @@ class FirebasePacaRepository : PacaRepository {
                         readings[timestamp] = reading
                     }
 
-                    val user = User(userId, readings)
+                    val user = User(id = userId, readings = readings)
                     users.add(user)
                 }
                 users
