@@ -9,6 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.gabodev.ecopacaanalyzer.utils.toFormattedDate
 import com.gabodev.ecopacaanalyzer.viewmodel.PacaViewModel
 
 @Composable
@@ -33,12 +34,13 @@ fun ReadingDetailScreen(
             CircularProgressIndicator(modifier = Modifier.padding(16.dp))
         } else {
             reading?.let {
-                Text(text = "Timestamp: ${it.timestamp}")
-                Text(text = "Humidity: ${it.humidity}")
-                Text(text = "Pressure: ${it.pressure}")
-                Text(text = "Temperature: ${it.temperature}")
+                val formattedDate = it.timestamp.toLong().toFormattedDate()
+                Text(text = "Fecha: $formattedDate")
+                Text(text = "Humedad: ${it.humidity}")
+                Text(text = "Presión: ${it.pressure}")
+                Text(text = "Temperatura: ${it.temperature}")
             } ?: run {
-                Text(text = "No data available.")
+                Text(text = "Datos no disponibles")
             }
         }
     }

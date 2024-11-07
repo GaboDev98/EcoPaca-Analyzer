@@ -8,13 +8,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.gabodev.ecopacaanalyzer.models.Reading
+import com.gabodev.ecopacaanalyzer.utils.toFormattedDate
 
 @Composable
 fun ReadingItem(reading: Reading, onClick: () -> Unit) {
+    val formattedDate = reading.timestamp.toLong().toFormattedDate()
     Column(modifier = Modifier
         .padding(bottom = 16.dp)
         .clickable { onClick() }) {
-        Text("Timestamp: ${reading.timestamp}")
+        Text("Fecha: $formattedDate")
         Text("Humedad: ${reading.humidity}")
         Text("Presión: ${reading.pressure}")
         Text("Temperatura: ${reading.temperature}")
