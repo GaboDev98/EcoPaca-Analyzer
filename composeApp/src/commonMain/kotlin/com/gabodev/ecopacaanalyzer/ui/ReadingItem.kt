@@ -1,4 +1,4 @@
-package com.gabodev.ecopacaanalyzer
+package com.gabodev.ecopacaanalyzer.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -7,6 +7,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.gabodev.ecopacaanalyzer.models.Reading
 
 @Composable
 fun ReadingItem(reading: Reading, onClick: () -> Unit) {

@@ -1,6 +1,4 @@
-package com.gabodev.ecopacaanalyzer.data
-
-import com.gabodev.ecopacaanalyzer.Reading
+package com.gabodev.ecopacaanalyzer.models
 
 data class User(
     val id: String,

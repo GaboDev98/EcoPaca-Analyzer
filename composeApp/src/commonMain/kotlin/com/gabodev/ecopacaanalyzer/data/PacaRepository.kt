@@ -1,4 +1,7 @@
-package com.gabodev.ecopacaanalyzer
+package com.gabodev.ecopacaanalyzer.data
+
+import com.gabodev.ecopacaanalyzer.models.Reading
+import com.gabodev.ecopacaanalyzer.models.User
 
 interface PacaRepository {
 

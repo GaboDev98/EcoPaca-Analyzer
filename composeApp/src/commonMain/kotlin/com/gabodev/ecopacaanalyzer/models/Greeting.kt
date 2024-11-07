@@ -1,6 +1,6 @@
-package com.gabodev.ecopacaanalyzer
+package com.gabodev.ecopacaanalyzer.models
 
-import com.gabodev.ecopacaanalyzer.utils.getPlatform
+import com.gabodev.ecopacaanalyzer.getPlatform
 
 class Greeting {
     private val platform = getPlatform()
