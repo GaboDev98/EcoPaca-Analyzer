@@ -1,4 +1,4 @@
-package com.gabodev.ecopacaanalyzer
+package com.gabodev.ecopacaanalyzer.data
 
 data class PacaReading(
     val id: String = "",

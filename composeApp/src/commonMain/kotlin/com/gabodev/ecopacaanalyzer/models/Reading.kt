@@ -1,4 +1,4 @@
-package com.gabodev.ecopacaanalyzer
+package com.gabodev.ecopacaanalyzer.models
 
 data class Reading(
     val id: String? = "",
