@@ -29,6 +29,60 @@ The mobile app provides an intuitive interface to visualize and monitor the data
 
 With this functionality, users can ensure that the bales remain in optimal conditions and track their status and location, improving the management and maintenance of the biodigesters.
 
+# EcoPacaAnalyzer App Documentation
+
+## Overview
+
+The **EcoPacaAnalyzer** app is designed to monitor the environmental conditions of biodigester bales, such as temperature, humidity, and pressure, providing insights through a user-friendly interface. Users can view a list of bales, see readings associated with each bale, and access detailed information for each reading.
+
+## Screens
+
+### 1. User List Screen
+
+The User List screen displays a list of devices (bales) registered in the system. Each user represents a device that monitors the environmental conditions of a specific bale.
+
+**Features:**
+- Displays a list of all available devices (bales).
+- Users can tap on a device to view its readings.
+
+**Screenshot:**
+<img src="/screenshots/list_users.png" alt="User List Screen" width="400"/>
+
+---
+
+### 2. Readings Screen
+
+The Readings Screen displays a list of readings associated with a specific device (bale). Each reading contains data such as timestamp, humidity, pressure, and temperature.
+
+**Features:**
+- Shows a list of readings for a selected bale.
+- Allows users to click on a specific reading to view detailed information.
+
+**Screenshot:**
+<img src="/screenshots/list_readings.png" alt="Readings Screen" width="400"/>
+
+---
+
+### 3. Reading Detail Screen
+
+The Reading Detail screen provides detailed information about a specific reading, including timestamp, humidity, pressure, and temperature.
+
+**Features:**
+- Displays specific details for a single reading.
+- Shows data like timestamp, humidity, pressure, and temperature.
+- Displays a "No data available" message if the reading detail is unavailable.
+
+**Screenshot:**
+<img src="/screenshots/detail_reading.png" alt="Reading Detail Screen" width="400"/>
+
+---
+
+## Conclusion
+
+These three screens form the core functionality of the EcoPacaAnalyzer app, enabling users to track and monitor the environmental conditions of biodigester bales. From viewing a list of devices to exploring individual readings in detail, the app helps users manage and ensure each bale's optimal condition.
+
+Future enhancements could include real-time updates, data visualization, and more comprehensive analytics for bale data.
+
 ---
 
 ## Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)
