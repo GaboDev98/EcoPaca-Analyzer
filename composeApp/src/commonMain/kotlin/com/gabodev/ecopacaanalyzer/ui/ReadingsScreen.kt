@@ -1,5 +1,6 @@
 package com.gabodev.ecopacaanalyzer.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -13,6 +14,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.gabodev.ecopacaanalyzer.viewmodel.PacaViewModel
@@ -29,32 +31,37 @@ fun ReadingsScreen(viewModel: PacaViewModel, userId: String, navController: NavH
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .background(Color.White)
     ) {
 
-        Text(
-            text = "Lecturas de la paca",
-            style = MaterialTheme.typography.h5,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+        Toolbar(title = "Lecturas de la paca", showBackButton = true, onBackClick = {
+            navController.popBackStack()
+        })
 
-        if (isLoading) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-        } else {
-            if (readings.isNotEmpty()) {
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(readings.values.toList()) { reading ->
-                        ReadingItem(reading) {
-                            navController.navigate("readingDetail/${userId}/${reading.id}")
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .background(Color.White)
+        ) {
+            if (isLoading) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+            } else {
+                if (readings.isNotEmpty()) {
+                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                        items(readings.values.toList()) { reading ->
+                            ReadingItem(reading) {
+                                navController.navigate("readingDetail/${userId}/${reading.id}")
+                            }
                         }
                     }
+                } else {
+                    Text(
+                        text = "Lecturas no disponibles.",
+                        style = MaterialTheme.typography.body1,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
                 }
-            } else {
-                Text(
-                    text = "Lecturas no disponibles.",
-                    style = MaterialTheme.typography.body1,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
             }
         }
     }

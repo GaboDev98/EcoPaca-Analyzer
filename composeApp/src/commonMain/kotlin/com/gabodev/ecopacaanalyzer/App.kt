@@ -19,7 +19,7 @@ fun App(viewModel: PacaViewModel) {
         composable("userList") {
             UserListScreen(viewModel = viewModel, onUserClick = { userId ->
                 navController.navigate("readings/$userId")
-            })
+            }, navController = navController)
         }
         composable("readings/{userId}") { backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userId").orEmpty()
@@ -28,7 +28,7 @@ fun App(viewModel: PacaViewModel) {
         composable("readingDetail/{userId}/{readingId}") { backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userId").orEmpty()
             val readingId = backStackEntry.arguments?.getString("readingId").orEmpty()
-            ReadingDetailScreen(viewModel = viewModel, userId = userId, readingId = readingId)
+            ReadingDetailScreen(viewModel = viewModel, userId = userId, readingId = readingId, navController = navController)
         }
     }
 }

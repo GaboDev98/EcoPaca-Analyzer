@@ -1,17 +1,12 @@
 package com.gabodev.ecopacaanalyzer.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,13 +14,19 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.gabodev.ecopacaanalyzer.models.User
 import com.gabodev.ecopacaanalyzer.viewmodel.PacaViewModel
 
 @Composable
-fun UserListScreen(viewModel: PacaViewModel, onUserClick: (String) -> Unit) {
-    val users = viewModel.users.collectAsState().value
-    val isLoading =
-        viewModel.isLoading.collectAsState().value  // Assuming you have a loading state in your ViewModel
+fun UserListScreen(
+    viewModel: PacaViewModel,
+    onUserClick: (String) -> Unit,
+    navController: NavController
+) {
+    val usersState = viewModel.users.collectAsState(initial = emptyList())
+    val isLoading = viewModel.isLoading.collectAsState().value
+    val error = viewModel.error.collectAsState().value
 
     LaunchedEffect(true) {
         viewModel.loadUsers()
@@ -34,39 +35,63 @@ fun UserListScreen(viewModel: PacaViewModel, onUserClick: (String) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
             .background(Color.White)
     ) {
-        Text(
-            text = "Dispositivos de las pacas",
-            style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold),
-            modifier = Modifier.padding(bottom = 24.dp)
-        )
+        Toolbar(title = "Dispositivos de las pacas", showBackButton = false, {})
 
-        if (isLoading) {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
-        } else {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                users.forEach { user ->
-                    Button(
-                        onClick = { onUserClick(user.id) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp)
-                            .background(
-                                MaterialTheme.colors.primary,
-                                shape = MaterialTheme.shapes.medium
-                            )
-                    ) {
-                        Text(
-                            text = user.id,
-                            style = TextStyle(color = Color.White, fontSize = 16.sp)
-                        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .background(Color.White)
+        ) {
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            } else if (error != null) {
+                Text(
+                    text = "Error al cargar las pacas: ${error.message}",
+                    style = MaterialTheme.typography.body1,
+                    color = Color.Red,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            } else {
+                LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                    var counter = 0
+                    items(usersState.value) { user ->
+                        counter++
+                        UserItem(user, counter) {
+                            onUserClick(user.id)
+                        }
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun UserItem(user: User, counter: Int, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+            .clickable { onClick() },
+        elevation = 4.dp,
+        shape = MaterialTheme.shapes.medium
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = "Paca #$counter",
+                style = MaterialTheme.typography.body1,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+            Text(
+                text = user.id,
+                style = MaterialTheme.typography.body1,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
         }
     }
 }

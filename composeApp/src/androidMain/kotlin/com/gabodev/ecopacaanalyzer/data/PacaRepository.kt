@@ -41,7 +41,7 @@ class FirebasePacaRepository : PacaRepository {
                         readings[timestamp] = reading
                     }
 
-                    val user = User(userId, readings)
+                    val user = User(id = userId, readings = readings)
                     users.add(user)
                 }
                 users
