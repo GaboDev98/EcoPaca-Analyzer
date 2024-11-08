@@ -1,12 +1,9 @@
-#include <EEPROM.h>  // Biblioteca para trabajar con la EEPROM
 #include <WiFi.h>
 #include <Firebase_ESP_Client.h>
-#include <Wire.h>
 #include "time.h"
 
 // Otros includes y definiciones...
 #include "addons/TokenHelper.h"
-#include "addons/RTDBHelper.h"
 
 // Credenciales de Wi-Fi y Firebase
 #define WIFI_SSID "DALLAS"
@@ -21,13 +18,8 @@ FirebaseData fbdo;
 FirebaseAuth auth;
 FirebaseConfig config;
 
-// Variable para guardar el UID del usuario
-String uid;
-
-// Variable para el ID único
+// Variables de la base de datos
 String uniqueDeviceId;
-
-// Rutas de la base de datos (para ser actualizadas en setup con el UID del usuario)
 String databasePath;
 String tempPath = "/temperature";
 String humPath = "/humidity";
@@ -46,7 +38,7 @@ const char* ntpServer = "pool.ntp.org";
 unsigned long sendDataPrevMillis = 0;
 unsigned long timerDelay = 180000; // 3 minutos = 180000 milisegundos
 
-// Función para generar un ID único
+// Función para generar un ID único a partir de la dirección MAC
 String generateUniqueId() {
   uint64_t chipId = ESP.getEfuseMac();  // Obtener la dirección MAC única (usada como ID)
   String uniqueId = String(chipId, HEX); // Convertir la dirección MAC a string (en HEX)
@@ -76,46 +68,13 @@ unsigned long getTime() {
   return now;
 }
 
-// Función para leer el ID único del dispositivo desde la EEPROM
-String readUniqueIdFromEEPROM() {
-  String id = "";
-  for (int i = 0; i < 16; i++) {
-    char c = EEPROM.read(i);  // Leer cada byte de la EEPROM
-    if (c != 0) {
-      id += c;  // Añadir al string del ID
-    }
-  }
-  return id;
-}
-
-// Función para escribir el ID único del dispositivo en la EEPROM
-void writeUniqueIdToEEPROM(String id) {
-  for (int i = 0; i < id.length(); i++) {
-    EEPROM.write(i, id[i]);  // Escribir cada byte en la EEPROM
-  }
-  EEPROM.commit();  // Guardar los cambios en la EEPROM
-}
-
 void setup() {
   Serial.begin(115200);
 
-  // Inicializar la EEPROM con un tamaño de 512 bytes (ajustar según sea necesario)
-  EEPROM.begin(512);
-
-  // Intentar leer el ID único desde la EEPROM
-  uniqueDeviceId = readUniqueIdFromEEPROM();
-
-  // Si no se encuentra un ID, generar uno nuevo y guardarlo
-  if (uniqueDeviceId == "") {
-    uniqueDeviceId = generateUniqueId();
-    writeUniqueIdToEEPROM(uniqueDeviceId);
-    Serial.println("ID único generado: " + uniqueDeviceId);
-  } else {
-    Serial.println("ID único desde la EEPROM: " + uniqueDeviceId);
-  }
-
-  // Inicializar Wi-Fi y Firebase
+  // Inicializar Wi-Fi
   initWiFi();
+
+  // Configirar reloj
   configTime(0, 0, ntpServer);
 
   // Asignar la clave API (requerida)
@@ -141,6 +100,7 @@ void setup() {
   Firebase.begin(&config, &auth);
 
   // Usar el ID único para Firebase
+  uniqueDeviceId = generateUniqueId();
   databasePath = "/DevicesData/" + uniqueDeviceId + "/readings";
 }
 
