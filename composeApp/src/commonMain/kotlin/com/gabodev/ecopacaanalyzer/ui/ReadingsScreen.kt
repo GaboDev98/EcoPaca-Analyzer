@@ -1,5 +1,6 @@
 package com.gabodev.ecopacaanalyzer.ui
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,23 +13,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.gabodev.ecopacaanalyzer.utils.toFormattedDate
 import com.gabodev.ecopacaanalyzer.viewmodel.PacaViewModel
+import androidx.compose.animation.core.*
+import com.gabodev.ecopacaanalyzer.models.Reading
 
 @Composable
-fun ReadingsScreen(viewModel: PacaViewModel, userId: String, navController: NavHostController) {
+fun ReadingsScreen(viewModel: PacaViewModel, deviceId: String, navController: NavHostController) {
     val readings = viewModel.readings.collectAsState().value
     val isLoading = viewModel.isLoading.collectAsState().value
 
     val lazyListState = rememberLazyListState()
 
-    LaunchedEffect(userId) {
-        viewModel.loadReadings(userId)
+    LaunchedEffect(deviceId) {
+        viewModel.loadReadings(deviceId)
     }
 
     LaunchedEffect(readings) {
         lazyListState.scrollToItem(0)
     }
+
+    var lastReading by remember { mutableStateOf<Reading?>(null) }
+
+    val colorTransition = animateColorAsState(
+        targetValue = if (lastReading != null) Color.Yellow else Color.Transparent,
+        animationSpec = tween(durationMillis = 500)
+    )
 
     Column(
         modifier = Modifier
@@ -51,14 +60,18 @@ fun ReadingsScreen(viewModel: PacaViewModel, userId: String, navController: NavH
                     val sortedReadings = readings.values
                         .sortedByDescending { it.timestamp.toLongOrNull() ?: Long.MIN_VALUE }
 
-                    val lastReading = sortedReadings.firstOrNull()
+                    val previousReading = sortedReadings.firstOrNull()
 
-                    lastReading?.let { reading ->
+                    previousReading?.let { reading ->
+                        if (lastReading != reading) {
+                            lastReading = reading
+                        }
+
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(bottom = 16.dp)
-                                .background(MaterialTheme.colors.surface),
+                                .background(colorTransition.value),
                             elevation = 4.dp
                         ) {
                             Column {

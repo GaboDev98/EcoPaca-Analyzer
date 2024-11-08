@@ -2,7 +2,7 @@ package com.gabodev.ecopacaanalyzer.viewmodel
 
 import com.gabodev.ecopacaanalyzer.models.Reading
 import com.gabodev.ecopacaanalyzer.data.PacaRepository
-import com.gabodev.ecopacaanalyzer.models.User
+import com.gabodev.ecopacaanalyzer.models.Device
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,14 +11,11 @@ import kotlinx.coroutines.launch
 
 class PacaViewModel(private val repository: PacaRepository) : ViewModel() {
 
-    private val _users = MutableStateFlow<List<User>>(emptyList())
-    val users: StateFlow<List<User>> = _users
+    private val _devices = MutableStateFlow<List<Device>>(emptyList())
+    val devices: StateFlow<List<Device>> = _devices
 
     private val _readings = MutableStateFlow<Map<String, Reading>>(emptyMap())
     val readings: StateFlow<Map<String, Reading>> = _readings
-
-    private val _readingDetail = MutableStateFlow<Reading?>(null)
-    val readingDetail: StateFlow<Reading?> = _readingDetail
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
@@ -27,14 +24,14 @@ class PacaViewModel(private val repository: PacaRepository) : ViewModel() {
     val error: StateFlow<Exception?> = _error
 
     init {
-        listenForUsersUpdates()
+        listenForDevicesUpdates()
     }
 
-    fun loadReadings(userId: String) {
+    fun loadReadings(deviceId: String) {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                repository.listenForReadingsUpdates(userId, _readings)
+                repository.listenForReadingsUpdates(deviceId, _readings)
             } catch (e: Exception) {
                 _error.value = e
             } finally {
@@ -43,32 +40,11 @@ class PacaViewModel(private val repository: PacaRepository) : ViewModel() {
         }
     }
 
-    fun getReadingDetail(userId: String, readingId: String) {
-        performOperation {
-            val readingDetailFromFirebase = repository.getReadingDetail(userId, readingId)
-            _readingDetail.value = readingDetailFromFirebase
-        }
-    }
-
-    private fun listenForUsersUpdates() {
+    private fun listenForDevicesUpdates() {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                repository.listenForUsersUpdates(_users)
-            } catch (e: Exception) {
-                _error.value = e
-            } finally {
-                _isLoading.value = false
-            }
-        }
-    }
-
-    private fun performOperation(operation: suspend () -> Unit) {
-        _isLoading.value = true
-        _error.value = null
-        viewModelScope.launch {
-            try {
-                operation()
+                repository.listenForDevicesUpdates(_devices)
             } catch (e: Exception) {
                 _error.value = e
             } finally {

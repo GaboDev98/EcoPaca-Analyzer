@@ -1,7 +1,7 @@
 package com.gabodev.ecopacaanalyzer.data
 
 import com.gabodev.ecopacaanalyzer.models.Reading
-import com.gabodev.ecopacaanalyzer.models.User
+import com.gabodev.ecopacaanalyzer.models.Device
 import com.gabodev.ecopacaanalyzer.utils.orEmpty
 import com.google.firebase.database.*
 import kotlinx.coroutines.Dispatchers
@@ -13,10 +13,10 @@ import kotlinx.coroutines.withContext
 class FirebasePacaRepository : PacaRepository {
     private val database = FirebaseDatabase.getInstance()
 
-    override suspend fun getReadingDetail(userId: String, readingId: String): Reading? {
+    override suspend fun getReadingDetail(deviceId: String, readingId: String): Reading? {
         return withContext(Dispatchers.IO) {
             try {
-                val snapshot = database.getReference("UsersData/$userId/readings/$readingId").get().await()
+                val snapshot = database.getReference("DevicesData/$deviceId/readings/$readingId").get().await()
                 if (snapshot.exists()) parseReadingSnapshot(snapshot) else null
             } catch (e: Exception) {
                 null
@@ -24,12 +24,12 @@ class FirebasePacaRepository : PacaRepository {
         }
     }
 
-    override fun listenForUsersUpdates(usersFlow: MutableStateFlow<List<User>>) {
-        database.getReference("UsersData").addValueEventListener(object : ValueEventListener {
+    override fun listenForDevicesUpdates(devicesFlow: MutableStateFlow<List<Device>>) {
+        database.getReference("DevicesData").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 try {
-                    val usersList = snapshot.children.mapNotNull { parseUserSnapshot(it) }
-                    usersFlow.update { usersList }
+                    val devicesList = snapshot.children.mapNotNull { parseDeviceSnapshot(it) }
+                    devicesFlow.update { devicesList }
                 } catch (e: Exception) { }
             }
 
@@ -37,8 +37,8 @@ class FirebasePacaRepository : PacaRepository {
         })
     }
 
-    override fun listenForReadingsUpdates(userId: String, readingsFlow: MutableStateFlow<Map<String, Reading>>) {
-        val ref: DatabaseReference = database.getReference("UsersData/$userId/readings")
+    override fun listenForReadingsUpdates(deviceId: String, readingsFlow: MutableStateFlow<Map<String, Reading>>) {
+        val ref: DatabaseReference = database.getReference("DevicesData/$deviceId/readings")
 
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -53,11 +53,11 @@ class FirebasePacaRepository : PacaRepository {
         })
     }
 
-    private fun parseUserSnapshot(userSnapshot: DataSnapshot): User? {
-        val userId = userSnapshot.key ?: return null
-        val readings = userSnapshot.child("readings").children.mapNotNull { parseReadingSnapshot(it) }
+    private fun parseDeviceSnapshot(deviceSnapshot: DataSnapshot): Device? {
+        val deviceId = deviceSnapshot.key ?: return null
+        val readings = deviceSnapshot.child("readings").children.mapNotNull { parseReadingSnapshot(it) }
             .associateBy { it.timestamp }
-        return User(id = userId, readings = readings)
+        return Device(id = deviceId, readings = readings)
     }
 
     private fun parseReadingSnapshot(readingSnapshot: DataSnapshot): Reading? {
