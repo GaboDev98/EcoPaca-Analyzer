@@ -3,14 +3,13 @@ package com.gabodev.ecopacaanalyzer.viewmodel
 import com.gabodev.ecopacaanalyzer.models.Reading
 import com.gabodev.ecopacaanalyzer.data.PacaRepository
 import com.gabodev.ecopacaanalyzer.models.User
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class PacaViewModel(private val repository: PacaRepository) {
+class PacaViewModel(private val repository: PacaRepository) : ViewModel() {
 
     private val _users = MutableStateFlow<List<User>>(emptyList())
     val users: StateFlow<List<User>> = _users
@@ -27,28 +26,15 @@ class PacaViewModel(private val repository: PacaRepository) {
     private val _error = MutableStateFlow<Exception?>(null)
     val error: StateFlow<Exception?> = _error
 
-    fun loadUsers() {
-        _isLoading.value = true
-        _error.value = null
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val usersFromFirebase = repository.getUsers()
-                _users.value = usersFromFirebase
-            } catch (e: Exception) {
-                _error.value = e
-            } finally {
-                _isLoading.value = false
-            }
-        }
+    init {
+        listenForUsersUpdates()
     }
 
     fun loadReadings(userId: String) {
-        _isLoading.value = true
-        _error.value = null
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
+            _isLoading.value = true
             try {
-                val readingsFromFirebase = repository.getReadings(userId)
-                _readings.value = readingsFromFirebase
+                repository.listenForReadingsUpdates(userId, _readings)
             } catch (e: Exception) {
                 _error.value = e
             } finally {
@@ -57,13 +43,32 @@ class PacaViewModel(private val repository: PacaRepository) {
         }
     }
 
-    suspend fun getReadingDetail(userId: String, readingId: String) {
+    fun getReadingDetail(userId: String, readingId: String) {
+        performOperation {
+            val readingDetailFromFirebase = repository.getReadingDetail(userId, readingId)
+            _readingDetail.value = readingDetailFromFirebase
+        }
+    }
+
+    private fun listenForUsersUpdates() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                repository.listenForUsersUpdates(_users)
+            } catch (e: Exception) {
+                _error.value = e
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    private fun performOperation(operation: suspend () -> Unit) {
         _isLoading.value = true
         _error.value = null
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
             try {
-                val readingDetailFromFirebase = repository.getReadingDetail(userId, readingId)
-                _readingDetail.value = readingDetailFromFirebase
+                operation()
             } catch (e: Exception) {
                 _error.value = e
             } finally {

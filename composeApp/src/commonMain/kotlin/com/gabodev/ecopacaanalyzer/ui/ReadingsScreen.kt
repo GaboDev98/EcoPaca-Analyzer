@@ -33,7 +33,6 @@ fun ReadingsScreen(viewModel: PacaViewModel, userId: String, navController: NavH
             .fillMaxSize()
             .background(Color.White)
     ) {
-
         Toolbar(title = "Lecturas de la paca", showBackButton = true, onBackClick = {
             navController.popBackStack()
         })
@@ -48,8 +47,11 @@ fun ReadingsScreen(viewModel: PacaViewModel, userId: String, navController: NavH
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
             } else {
                 if (readings.isNotEmpty()) {
+                    val sortedReadings = readings.values
+                        .sortedByDescending { it.timestamp.toLongOrNull() ?: Long.MIN_VALUE }
+
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
-                        items(readings.values.toList()) { reading ->
+                        items(sortedReadings, key = { it -> (it.timestamp.takeIf { it.isNotEmpty() } ?: it.id)!! }) { reading ->
                             ReadingItem(reading) {
                                 navController.navigate("readingDetail/${userId}/${reading.id}")
                             }

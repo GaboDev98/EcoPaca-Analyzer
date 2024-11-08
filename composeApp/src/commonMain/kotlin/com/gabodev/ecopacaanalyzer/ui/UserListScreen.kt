@@ -10,27 +10,18 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.gabodev.ecopacaanalyzer.models.User
 import com.gabodev.ecopacaanalyzer.viewmodel.PacaViewModel
 
 @Composable
 fun UserListScreen(
     viewModel: PacaViewModel,
-    onUserClick: (String) -> Unit,
-    navController: NavController
+    onUserClick: (String) -> Unit
 ) {
     val usersState = viewModel.users.collectAsState(initial = emptyList())
     val isLoading = viewModel.isLoading.collectAsState().value
     val error = viewModel.error.collectAsState().value
-
-    LaunchedEffect(true) {
-        viewModel.loadUsers()
-    }
 
     Column(
         modifier = Modifier

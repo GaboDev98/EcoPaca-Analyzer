@@ -19,7 +19,7 @@ fun App(viewModel: PacaViewModel) {
         composable("userList") {
             UserListScreen(viewModel = viewModel, onUserClick = { userId ->
                 navController.navigate("readings/$userId")
-            }, navController = navController)
+            })
         }
         composable("readings/{userId}") { backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userId").orEmpty()
