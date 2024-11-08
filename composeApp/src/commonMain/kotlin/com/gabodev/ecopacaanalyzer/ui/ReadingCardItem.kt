@@ -1,17 +1,8 @@
 package com.gabodev.ecopacaanalyzer.ui
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Card
-import androidx.compose.material.Text
-import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.gabodev.ecopacaanalyzer.models.Reading
-import com.gabodev.ecopacaanalyzer.utils.toFormattedDate
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -19,10 +10,20 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.unit.dp
+import com.gabodev.ecopacaanalyzer.models.Reading
+import com.gabodev.ecopacaanalyzer.utils.toFormattedDate
 
 @Composable
 fun ReadingCardItem(reading: Reading, isPadding: Boolean = true, showDateLabel: Boolean = true, onClick: () -> Unit) {
     var showDetails by remember { mutableStateOf(false) }
+
+    val rotationAngle by animateFloatAsState(
+        targetValue = if (showDetails) 180f else 0f,
+        animationSpec = tween(durationMillis = 300)
+    )
 
     Card(
         modifier = Modifier
@@ -48,8 +49,9 @@ fun ReadingCardItem(reading: Reading, isPadding: Boolean = true, showDateLabel: 
                     modifier = Modifier.align(Alignment.CenterVertically)
                 ) {
                     Icon(
-                        imageVector = if (showDetails) Icons.Filled.ArrowDropDown else Icons.Filled.ArrowDropDown,
-                        contentDescription = if (showDetails) "Ocultar detalles" else "Mostrar detalles"
+                        imageVector = Icons.Filled.ArrowDropDown,
+                        contentDescription = if (showDetails) "Ocultar detalles" else "Mostrar detalles",
+                        modifier = Modifier.graphicsLayer(rotationZ = rotationAngle) // Aplicar la rotación animada
                     )
                 }
             }
