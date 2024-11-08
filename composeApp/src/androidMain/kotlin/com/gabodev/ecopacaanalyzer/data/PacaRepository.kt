@@ -67,6 +67,7 @@ class FirebasePacaRepository : PacaRepository {
         val temperature = readingSnapshot.child("temperature").getValue(String::class.java).orEmpty()
         return if (timestamp.isNotEmpty()) {
             Reading(
+                id = timestamp,
                 humidity = humidity,
                 pressure = pressure,
                 temperature = temperature,
