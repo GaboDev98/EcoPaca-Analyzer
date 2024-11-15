@@ -1,13 +1,14 @@
 package com.gabodev.ecopacaanalyzer.data
 
 import com.gabodev.ecopacaanalyzer.models.Reading
-import com.gabodev.ecopacaanalyzer.models.User
+import com.gabodev.ecopacaanalyzer.models.Device
+import kotlinx.coroutines.flow.MutableStateFlow
 
 interface PacaRepository {
 
-    suspend fun getUsers(): List<User>
+    suspend fun getReadingDetail(deviceId: String, readingId: String): Reading?
 
-    suspend fun getReadings(userId: String): Map<String, Reading>
+    fun listenForDevicesUpdates(devicesFlow: MutableStateFlow<List<Device>>)
 
-    suspend fun getReadingDetail(userId: String, readingId: String): Reading?
+    fun listenForReadingsUpdates(deviceId: String, readingsFlow: MutableStateFlow<Map<String, Reading>>)
 }

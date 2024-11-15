@@ -25,7 +25,7 @@ fun Toolbar(title: String, showBackButton: Boolean, onBackClick: () -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .padding(start = 0.dp, end = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
@@ -36,6 +36,8 @@ fun Toolbar(title: String, showBackButton: Boolean, onBackClick: () -> Unit) {
                         contentDescription = "Atrás"
                     )
                 }
+            } else {
+                Spacer(modifier = Modifier.width(16.dp))
             }
 
             Text(

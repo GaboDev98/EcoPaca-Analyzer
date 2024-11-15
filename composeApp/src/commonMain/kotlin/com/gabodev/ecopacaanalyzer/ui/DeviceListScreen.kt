@@ -10,27 +10,18 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import com.gabodev.ecopacaanalyzer.models.User
+import com.gabodev.ecopacaanalyzer.models.Device
 import com.gabodev.ecopacaanalyzer.viewmodel.PacaViewModel
 
 @Composable
-fun UserListScreen(
+fun DeviceListScreen(
     viewModel: PacaViewModel,
-    onUserClick: (String) -> Unit,
-    navController: NavController
+    onDeviceClick: (String) -> Unit
 ) {
-    val usersState = viewModel.users.collectAsState(initial = emptyList())
+    val devicesState = viewModel.devices.collectAsState(initial = emptyList())
     val isLoading = viewModel.isLoading.collectAsState().value
     val error = viewModel.error.collectAsState().value
-
-    LaunchedEffect(true) {
-        viewModel.loadUsers()
-    }
 
     Column(
         modifier = Modifier
@@ -59,10 +50,10 @@ fun UserListScreen(
             } else {
                 LazyColumn(modifier = Modifier.fillMaxWidth()) {
                     var counter = 0
-                    items(usersState.value) { user ->
+                    items(devicesState.value) { device ->
                         counter++
-                        UserItem(user, counter) {
-                            onUserClick(user.id)
+                        DeviceItem(device, counter) {
+                            onDeviceClick(device.id)
                         }
                     }
                 }
@@ -72,7 +63,7 @@ fun UserListScreen(
 }
 
 @Composable
-fun UserItem(user: User, counter: Int, onClick: () -> Unit) {
+fun DeviceItem(device: Device, counter: Int, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -88,7 +79,7 @@ fun UserItem(user: User, counter: Int, onClick: () -> Unit) {
                 modifier = Modifier.padding(bottom = 4.dp)
             )
             Text(
-                text = user.id,
+                text = device.id,
                 style = MaterialTheme.typography.body1,
                 modifier = Modifier.padding(bottom = 4.dp)
             )
