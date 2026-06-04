@@ -13,7 +13,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun Toolbar(title: String, showBackButton: Boolean, onBackClick: () -> Unit) {
+fun Toolbar(
+    title: String,
+    showBackButton: Boolean = false,
+    onBackClick: () -> Unit = {},
+    onLogoutClick: (() -> Unit)? = null
+) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -47,8 +52,20 @@ fun Toolbar(title: String, showBackButton: Boolean, onBackClick: () -> Unit) {
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
-                )
+                ),
+                modifier = Modifier.weight(1f)
             )
+
+            if (onLogoutClick != null) {
+                Text(
+                    text = "⏻",
+                    fontSize = 20.sp,
+                    color = Color.White,
+                    modifier = Modifier
+                        .clickable { onLogoutClick() }
+                        .padding(8.dp)
+                )
+            }
         }
     }
 }

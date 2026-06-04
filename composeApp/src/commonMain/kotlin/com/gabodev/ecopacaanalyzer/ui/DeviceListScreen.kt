@@ -20,7 +20,8 @@ import com.gabodev.ecopacaanalyzer.viewmodel.PacaViewModel
 @Composable
 fun DeviceListScreen(
     viewModel: PacaViewModel,
-    onDeviceClick: (String) -> Unit
+    onDeviceClick: (String) -> Unit,
+    onLogout: () -> Unit = {}
 ) {
     val devicesState = viewModel.devices.collectAsState(initial = emptyList())
     val isLoading = viewModel.isLoading.collectAsState().value
@@ -50,7 +51,7 @@ fun DeviceListScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Toolbar(title = "Dispositivos", showBackButton = false, {})
+            Toolbar(title = "Dispositivos", showBackButton = false, onLogoutClick = { onLogout() })
 
             AnimatedVisibility(visible = successMessage != null) {
                 Card(

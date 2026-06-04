@@ -6,15 +6,18 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.gabodev.ecopacaanalyzer.data.FirebasePacaRepository
+import com.gabodev.ecopacaanalyzer.viewmodel.AuthViewModel
 import com.gabodev.ecopacaanalyzer.viewmodel.PacaViewModel
 
 class MainActivity : ComponentActivity() {
-    private val viewModel by lazy { PacaViewModel(FirebasePacaRepository()) }
+    private val pacaViewModel by lazy { PacaViewModel(FirebasePacaRepository()) }
+    private val authViewModel by lazy { AuthViewModel() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            App(viewModel)
+            App(pacaViewModel, authViewModel)
         }
     }
 }
@@ -22,6 +25,7 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 fun AppAndroidPreview() {
-    val viewModel by lazy { PacaViewModel(FirebasePacaRepository()) }
-    App(viewModel)
+    val pacaViewModel by lazy { PacaViewModel(FirebasePacaRepository()) }
+    val authViewModel by lazy { AuthViewModel() }
+    App(pacaViewModel, authViewModel)
 }
