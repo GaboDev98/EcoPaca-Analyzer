@@ -2,8 +2,9 @@ package com.gabodev.ecopacaanalyzer.models
 
 data class Reading(
     val id: String? = "",
-    val humidity: String,
-    val pressure: String,
-    val temperature: String,
-    val timestamp: String
+    val timestamp: String = "",
+    val sensors: Map<String, Sensor> = emptyMap(),
+    val humidity: String? = null,
+    val pressure: String? = null,
+    val temperature: String? = null
 )

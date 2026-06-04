@@ -8,6 +8,8 @@ interface PacaRepository {
 
     suspend fun getReadingDetail(deviceId: String, readingId: String): Reading?
 
+    suspend fun registerDevice(device: Device): Boolean
+
     fun listenForDevicesUpdates(devicesFlow: MutableStateFlow<List<Device>>)
 
     fun listenForReadingsUpdates(deviceId: String, readingsFlow: MutableStateFlow<Map<String, Reading>>)

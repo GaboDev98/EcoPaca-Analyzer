@@ -13,6 +13,23 @@ import kotlinx.coroutines.withContext
 class FirebasePacaRepository : PacaRepository {
     private val database = FirebaseDatabase.getInstance()
 
+    override suspend fun registerDevice(device: Device): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val deviceData = mapOf(
+                    "name" to (device.name ?: ""),
+                    "type" to device.type.name,
+                    "location" to (device.location ?: ""),
+                    "readings" to emptyMap<String, Any>()
+                )
+                database.getReference("DevicesData/${device.id}").setValue(deviceData).await()
+                true
+            } catch (e: Exception) {
+                false
+            }
+        }
+    }
+
     override suspend fun getReadingDetail(deviceId: String, readingId: String): Reading? {
         return withContext(Dispatchers.IO) {
             try {
@@ -55,9 +72,26 @@ class FirebasePacaRepository : PacaRepository {
 
     private fun parseDeviceSnapshot(deviceSnapshot: DataSnapshot): Device? {
         val deviceId = deviceSnapshot.key ?: return null
+        val name = deviceSnapshot.child("name").getValue(String::class.java)
+        val typeString = deviceSnapshot.child("type").getValue(String::class.java)
+        val location = deviceSnapshot.child("location").getValue(String::class.java)
+
         val readings = deviceSnapshot.child("readings").children.mapNotNull { parseReadingSnapshot(it) }
             .associateBy { it.timestamp }
-        return Device(id = deviceId, readings = readings)
+
+        val deviceType = try {
+            com.gabodev.ecopacaanalyzer.models.DeviceType.valueOf(typeString ?: "BIODIGESTER_BALE")
+        } catch (e: Exception) {
+            com.gabodev.ecopacaanalyzer.models.DeviceType.BIODIGESTER_BALE
+        }
+
+        return Device(
+            id = deviceId,
+            name = name,
+            type = deviceType,
+            location = location,
+            readings = readings
+        )
     }
 
     private fun parseReadingSnapshot(readingSnapshot: DataSnapshot): Reading? {

@@ -6,13 +6,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.gabodev.ecopacaanalyzer.models.Reading
 import com.gabodev.ecopacaanalyzer.utils.toFormattedDate
 
@@ -34,7 +33,7 @@ fun ReadingCardItem(reading: Reading, isPadding: Boolean = true, showDateLabel: 
         shape = RoundedCornerShape(8.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            val formattedDate = reading.timestamp.toLong().toFormattedDate()
+            val formattedDate = reading.timestamp.toLongOrNull()?.toFormattedDate() ?: reading.timestamp
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -44,21 +43,24 @@ fun ReadingCardItem(reading: Reading, isPadding: Boolean = true, showDateLabel: 
                     modifier = Modifier.weight(1f)
                 )
 
-                IconButton(
-                    onClick = { showDetails = !showDetails },
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowDropDown,
-                        contentDescription = if (showDetails) "Ocultar detalles" else "Mostrar detalles",
-                        modifier = Modifier.graphicsLayer(rotationZ = rotationAngle) // Aplicar la rotación animada
-                    )
-                }
+                Text(
+                    text = "▼",
+                    fontSize = 12.sp,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .graphicsLayer(rotationZ = rotationAngle)
+                        .clickable { showDetails = !showDetails }
+                        .padding(8.dp)
+                )
             }
 
             if (showDetails) {
                 Spacer(modifier = Modifier.height(8.dp))
-                ReadingItem(reading, isPadding = isPadding, showDateLabel = showDateLabel)
+                if (reading.sensors.isNotEmpty()) {
+                    SensorDisplay(reading.sensors)
+                } else {
+                    ReadingItem(reading, isPadding = isPadding, showDateLabel = showDateLabel)
+                }
             }
         }
     }

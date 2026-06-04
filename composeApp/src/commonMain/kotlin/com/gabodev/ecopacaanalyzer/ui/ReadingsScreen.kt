@@ -44,7 +44,7 @@ fun ReadingsScreen(viewModel: PacaViewModel, deviceId: String, navController: Na
             .fillMaxSize()
             .background(Color.White)
     ) {
-        Toolbar(title = "Lecturas de la paca", showBackButton = true, onBackClick = {
+        Toolbar(title = "Lecturas del dispositivo", showBackButton = true, onBackClick = {
             navController.popBackStack()
         })
 

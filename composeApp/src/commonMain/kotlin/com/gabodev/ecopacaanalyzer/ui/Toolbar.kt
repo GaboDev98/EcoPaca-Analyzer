@@ -1,9 +1,8 @@
 package com.gabodev.ecopacaanalyzer.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,12 +29,14 @@ fun Toolbar(title: String, showBackButton: Boolean, onBackClick: () -> Unit) {
             horizontalArrangement = Arrangement.Start
         ) {
             if (showBackButton) {
-                IconButton(onClick = onBackClick) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Atrás"
-                    )
-                }
+                Text(
+                    text = "←",
+                    fontSize = 24.sp,
+                    color = Color.White,
+                    modifier = Modifier
+                        .clickable { onBackClick() }
+                        .padding(16.dp)
+                )
             } else {
                 Spacer(modifier = Modifier.width(16.dp))
             }

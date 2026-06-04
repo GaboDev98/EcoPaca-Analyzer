@@ -17,12 +17,23 @@ fun ReadingItem(reading: Reading, isPadding: Boolean = true, showDateLabel: Bool
             if (isPadding) Modifier.padding(16.dp) else Modifier
         )
     ) {
-        val formattedDate = reading.timestamp.toLong().toFormattedDate()
+        val formattedDate = reading.timestamp.toLongOrNull()?.toFormattedDate() ?: reading.timestamp
         if (showDateLabel) {
             Text("Fecha y hora: $formattedDate", style = MaterialTheme.typography.body2)
         }
-        Text("Temperatura: ${reading.temperature} °C", style = MaterialTheme.typography.body2)
-        Text("Humedad: ${reading.humidity}%", style = MaterialTheme.typography.body2)
-        Text("Presión: ${reading.pressure} hPa", style = MaterialTheme.typography.body2)
+
+        if (reading.sensors.isNotEmpty()) {
+            SensorDisplay(reading.sensors)
+        } else {
+            reading.temperature?.let {
+                Text("Temperatura: $it °C", style = MaterialTheme.typography.body2)
+            }
+            reading.humidity?.let {
+                Text("Humedad: $it%", style = MaterialTheme.typography.body2)
+            }
+            reading.pressure?.let {
+                Text("Presión: $it hPa", style = MaterialTheme.typography.body2)
+            }
+        }
     }
 }

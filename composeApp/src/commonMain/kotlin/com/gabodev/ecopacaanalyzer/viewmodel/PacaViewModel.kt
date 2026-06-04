@@ -23,8 +23,16 @@ class PacaViewModel(private val repository: PacaRepository) : ViewModel() {
     private val _error = MutableStateFlow<Exception?>(null)
     val error: StateFlow<Exception?> = _error
 
+    private val _successMessage = MutableStateFlow<String?>(null)
+    val successMessage: StateFlow<String?> = _successMessage
+
     init {
         listenForDevicesUpdates()
+    }
+
+    fun clearMessages() {
+        _error.value = null
+        _successMessage.value = null
     }
 
     fun loadReadings(deviceId: String) {
@@ -47,6 +55,30 @@ class PacaViewModel(private val repository: PacaRepository) : ViewModel() {
                 repository.listenForDevicesUpdates(_devices)
             } catch (e: Exception) {
                 _error.value = e
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun registerDevice(deviceId: String, deviceName: String, deviceType: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                val device = Device(
+                    id = deviceId,
+                    name = deviceName,
+                    readings = emptyMap()
+                )
+                val success = repository.registerDevice(device)
+                if (success) {
+                    _successMessage.value = "Dispositivo '$deviceName' registrado exitosamente"
+                    _error.value = null
+                } else {
+                    _error.value = Exception("Error al registrar dispositivo. Verifica la conexión.")
+                }
+            } catch (e: Exception) {
+                _error.value = Exception("Error: ${e.message ?: "Desconocido"}")
             } finally {
                 _isLoading.value = false
             }
