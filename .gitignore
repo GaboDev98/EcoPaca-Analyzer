@@ -27,3 +27,6 @@ keystore.properties
 
 # Firebase iOS config (download from Firebase Console)
 /iosApp/iosApp/GoogleService-Info.plist
+
+# ESP32 credentials
+/esp32/**/secrets.h

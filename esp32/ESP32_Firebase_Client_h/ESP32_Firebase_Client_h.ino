@@ -5,13 +5,8 @@
 // Otros includes y definiciones...
 #include "addons/TokenHelper.h"
 
-// Credenciales de Wi-Fi y Firebase
-#define WIFI_SSID "DALLAS"
-#define WIFI_PASSWORD "41774284"
-#define API_KEY "AIzaSyDe0Zr72jDwPl3Kdv53gTwoRblbfvQY_oo"
-#define USER_EMAIL "developer.gabo@gmail.com"
-#define USER_PASSWORD "12345678"
-#define DATABASE_URL "https://ecopacaanalyzer-default-rtdb.firebaseio.com/"
+// Credenciales de Wi-Fi y Firebase: ver secrets.h.example
+#include "secrets.h"
 
 // Definir objetos de Firebase
 FirebaseData fbdo;
@@ -101,7 +96,10 @@ void setup() {
 
   // Usar el ID único para Firebase
   uniqueDeviceId = generateUniqueId();
-  databasePath = "/DevicesData/" + uniqueDeviceId + "/readings";
+  // Ruta por usuario: registra este ID en la app con la misma cuenta (USER_EMAIL)
+  databasePath = "/devices/" + uniqueDeviceId + "/readings";
+  Serial.print("ID del dispositivo (regístralo en la app): ");
+  Serial.println(uniqueDeviceId);
 }
 
 void loop() {

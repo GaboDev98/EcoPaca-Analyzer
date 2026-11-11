@@ -2,6 +2,7 @@ package com.gabodev.iotdevicemonitor.viewmodel
 
 import com.gabodev.iotdevicemonitor.models.Reading
 import com.gabodev.iotdevicemonitor.data.PacaRepository
+import com.gabodev.iotdevicemonitor.data.RegisterResult
 import com.gabodev.iotdevicemonitor.models.Device
 import com.gabodev.iotdevicemonitor.models.DeviceType
 import androidx.lifecycle.ViewModel
@@ -73,12 +74,17 @@ class PacaViewModel(private val repository: PacaRepository) : ViewModel() {
                     location = location?.takeIf { it.isNotBlank() },
                     readings = emptyMap()
                 )
-                val success = repository.registerDevice(device)
-                if (success) {
-                    _successMessage.value = "Dispositivo agregado"
-                    _error.value = null
-                } else {
-                    _error.value = Exception("Error al registrar dispositivo. Verifica la conexión.")
+                when (repository.registerDevice(device)) {
+                    RegisterResult.Success -> {
+                        _successMessage.value = "Dispositivo agregado"
+                        _error.value = null
+                    }
+                    RegisterResult.AlreadyClaimed ->
+                        _error.value = Exception("El ID $deviceId ya está registrado en otra cuenta.")
+                    RegisterResult.NotSignedIn ->
+                        _error.value = Exception("Tu sesión expiró. Vuelve a iniciar sesión.")
+                    RegisterResult.Error ->
+                        _error.value = Exception("No pudimos agregar el dispositivo. Verifica tu conexión.")
                 }
             } catch (e: Exception) {
                 _error.value = Exception("Error: ${e.message ?: "Desconocido"}")
