@@ -48,7 +48,8 @@ class FirebasePacaRepository : PacaRepository {
                 throw e
             } catch (e: DatabaseException) {
                 // The rules only reject a well-formed write when the ID belongs to someone else.
-                if (DatabaseError.fromException(e).code == DatabaseError.PERMISSION_DENIED) {
+                // (Task exceptions carry the server error only in the message.)
+                if (e.message?.contains("Permission denied", ignoreCase = true) == true) {
                     RegisterResult.AlreadyClaimed
                 } else {
                     RegisterResult.Error
