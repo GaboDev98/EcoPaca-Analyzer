@@ -23,6 +23,8 @@ import androidx.compose.material.icons.rounded.Sensors
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
+import androidx.compose.material.icons.rounded.DeleteForever
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -64,6 +66,7 @@ fun DeviceListScreen(
     viewModel: PacaViewModel,
     onDeviceClick: (String) -> Unit,
     onLogout: () -> Unit = {},
+    onDeleteAccount: () -> Unit = {},
 ) {
     val devices by viewModel.devices.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -98,6 +101,14 @@ fun DeviceListScreen(
                                 text = { Text("Cerrar sesión") },
                                 leadingIcon = { Icon(Icons.AutoMirrored.Rounded.Logout, contentDescription = null) },
                                 onClick = { menuOpen = false; onLogout() },
+                            )
+                            HorizontalDivider()
+                            DropdownMenuItem(
+                                text = { Text("Eliminar cuenta", color = MaterialTheme.colorScheme.error) },
+                                leadingIcon = {
+                                    Icon(Icons.Rounded.DeleteForever, contentDescription = null, tint = MaterialTheme.colorScheme.error)
+                                },
+                                onClick = { menuOpen = false; onDeleteAccount() },
                             )
                         }
                     }

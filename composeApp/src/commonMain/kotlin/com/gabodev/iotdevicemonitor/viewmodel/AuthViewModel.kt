@@ -2,6 +2,7 @@ package com.gabodev.iotdevicemonitor.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gabodev.iotdevicemonitor.auth.doDeleteAccountFirebase
 import com.gabodev.iotdevicemonitor.auth.doLoginFirebase
 import com.gabodev.iotdevicemonitor.auth.doLogoutFirebase
 import com.gabodev.iotdevicemonitor.auth.doResetPasswordFirebase
@@ -86,6 +87,24 @@ class AuthViewModel : ViewModel() {
             }.onFailure { error ->
                 _authState.value = _authState.value.copy(
                     error = error.message ?: "Error al cerrar sesión"
+                )
+            }
+        }
+    }
+
+    fun deleteAccount(password: String) {
+        if (password.isEmpty()) {
+            _authState.value = _authState.value.copy(error = "Ingresa tu contraseña para confirmar")
+            return
+        }
+        viewModelScope.launch {
+            _authState.value = _authState.value.copy(isLoading = true, error = null)
+            doDeleteAccountFirebase(password).onSuccess {
+                _authState.value = AuthState()
+            }.onFailure { error ->
+                _authState.value = _authState.value.copy(
+                    isLoading = false,
+                    error = error.message ?: "No pudimos eliminar tu cuenta"
                 )
             }
         }

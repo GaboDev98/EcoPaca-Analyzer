@@ -9,3 +9,4 @@ internal actual suspend fun doSignUpFirebase(email: String, password: String): R
 internal actual suspend fun doLogoutFirebase(): Result<Unit> = notSupported()
 internal actual suspend fun doResetPasswordFirebase(email: String): Result<Unit> = notSupported()
 internal actual fun currentSessionUser(): SessionUser? = null
+internal actual suspend fun doDeleteAccountFirebase(password: String): Result<Unit> = notSupported()

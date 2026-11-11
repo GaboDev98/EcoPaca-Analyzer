@@ -9,3 +9,6 @@ internal expect suspend fun doResetPasswordFirebase(email: String): Result<Unit>
 /** Usuario con sesión persistida por Firebase, o null si no hay sesión. */
 internal data class SessionUser(val uid: String, val email: String?)
 internal expect fun currentSessionUser(): SessionUser?
+
+/** Re-authenticates with [password], deletes the user's devices and then the account. */
+internal expect suspend fun doDeleteAccountFirebase(password: String): Result<Unit>

@@ -56,6 +56,7 @@ fun App(viewModel: PacaViewModel, authViewModel: AuthViewModel) {
 
             // Device routes
             composable("deviceList") {
+                var showDeleteAccount by remember { mutableStateOf(false) }
                 DeviceListScreen(
                     viewModel = viewModel,
                     onDeviceClick = { deviceId ->
@@ -66,8 +67,21 @@ fun App(viewModel: PacaViewModel, authViewModel: AuthViewModel) {
                         navController.navigate("login") {
                             popUpTo("deviceList") { inclusive = true }
                         }
-                    }
+                    },
+                    onDeleteAccount = { showDeleteAccount = true }
                 )
+                if (showDeleteAccount) {
+                    DeleteAccountDialog(
+                        authViewModel = authViewModel,
+                        onDismiss = { showDeleteAccount = false },
+                        onDeleted = {
+                            showDeleteAccount = false
+                            navController.navigate("login") {
+                                popUpTo("deviceList") { inclusive = true }
+                            }
+                        }
+                    )
+                }
             }
 
             composable("readings/{deviceId}") { backStackEntry ->

@@ -16,3 +16,6 @@ internal actual suspend fun doResetPasswordFirebase(email: String): Result<Unit>
 
 internal actual fun currentSessionUser(): SessionUser? =
     authManager.getCurrentUserId()?.let { SessionUser(it, authManager.getCurrentUserEmail()) }
+
+internal actual suspend fun doDeleteAccountFirebase(password: String): Result<Unit> =
+    authManager.deleteAccount(password)
