@@ -1,0 +1,23 @@
+{
+  "rules": {
+    "devices": {
+      ".indexOn": ["owner"],
+      ".read": "auth != null && query.orderByChild === 'owner' && query.equalTo === auth.uid",
+      "$deviceId": {
+        ".read": "auth != null && data.child('owner').val() === auth.uid",
+        ".write": "auth != null && (data.exists() ? data.child('owner').val() === auth.uid : newData.child('owner').val() === auth.uid)",
+        ".validate": "$deviceId.length > 0 && $deviceId.length <= 64 && newData.hasChildren(['owner', 'type'])",
+        "owner": { ".validate": "newData.val() === auth.uid" },
+        "name": { ".validate": "newData.isString() && newData.val().length <= 80" },
+        "location": { ".validate": "newData.isString() && newData.val().length <= 80" },
+        "type": { ".validate": "newData.isString()" },
+        "readings": {
+          "$timestamp": {
+            ".validate": "newData.hasChildren(['temperature', 'humidity', 'pressure'])"
+          }
+        },
+        "$other": { ".validate": false }
+      }
+    }
+  }
+}
