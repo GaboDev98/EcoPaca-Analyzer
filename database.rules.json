@@ -1,0 +1,11 @@
+{
+  "rules": {
+    "DevicesData": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      "$deviceId": {
+        ".validate": "$deviceId.length > 0 && $deviceId.length <= 64"
+      }
+    }
+  }
+}

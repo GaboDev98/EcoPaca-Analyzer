@@ -1,4 +1,4 @@
-rootProject.name = "EcoPacaAnalyzer"
+rootProject.name = "IoTDeviceMonitor"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {

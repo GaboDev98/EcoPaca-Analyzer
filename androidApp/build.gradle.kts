@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeCompiler)
@@ -5,26 +7,53 @@ plugins {
     alias(libs.plugins.crashlytics)
 }
 
+// Release signing: credentials live in keystore.properties (gitignored) at the repo root,
+// or in env vars on CI. Without them, release builds are produced unsigned.
+val keystoreProps = Properties().apply {
+    val f = rootProject.file("keystore.properties")
+    if (f.exists()) f.inputStream().use { load(it) }
+}
+fun signingValue(key: String, env: String): String? =
+    keystoreProps.getProperty(key) ?: System.getenv(env)
+
 android {
-    namespace = "com.gabodev.ecopacaanalyzer"
+    namespace = "com.gabodev.iotdevicemonitor"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
         // Must match the package registered in Google Play Console
-        applicationId = "com.gabodev.ecopacaanalyzer"
+        applicationId = "com.gabodev.iotdevicemonitor"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
+        // Must be higher than any build already uploaded to Play. Override with -PversionCode=N
+        versionCode = (project.findProperty("versionCode") as String?)?.toInt() ?: 1
+        versionName = "1.0.0"
     }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    signingConfigs {
+        val storePath = signingValue("storeFile", "ECOPACA_KEYSTORE_PATH")
+        if (storePath != null) {
+            create("release") {
+                storeFile = rootProject.file(storePath)
+                storePassword = signingValue("storePassword", "ECOPACA_KEYSTORE_PASSWORD")
+                keyAlias = signingValue("keyAlias", "ECOPACA_KEY_ALIAS")
+                keyPassword = signingValue("keyPassword", "ECOPACA_KEY_PASSWORD")
+            }
+        }
+    }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            signingConfigs.findByName("release")?.let { signingConfig = it }
         }
     }
     compileOptions {

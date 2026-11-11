@@ -10,7 +10,7 @@ plugins {
 
 kotlin {
     android {
-        namespace = "com.gabodev.ecopacaanalyzer.shared"
+        namespace = "com.gabodev.iotdevicemonitor.shared"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
         androidResources.enable = true
@@ -44,7 +44,8 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
-            implementation(libs.compose.material)
+            implementation(libs.compose.material3)
+            implementation(libs.compose.material.icons.extended)
             implementation(libs.compose.ui)
             implementation(libs.navigation.compose)
             implementation(libs.compose.components.resources)
@@ -61,11 +62,11 @@ kotlin {
 
 compose.desktop {
     application {
-        mainClass = "com.gabodev.ecopacaanalyzer.MainKt"
+        mainClass = "com.gabodev.iotdevicemonitor.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.gabodev.ecopacaanalyzer"
+            packageName = "com.gabodev.iotdevicemonitor"
             packageVersion = "1.0.0"
         }
     }

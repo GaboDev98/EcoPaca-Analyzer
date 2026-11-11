@@ -19,3 +19,11 @@ captures
 
 # Google services file
 /androidApp/google-services.json
+
+# Release signing
+keystore.properties
+*.jks
+*.keystore
+
+# Firebase iOS config (download from Firebase Console)
+/iosApp/iosApp/GoogleService-Info.plist
