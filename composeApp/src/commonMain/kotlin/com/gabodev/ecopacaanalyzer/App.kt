@@ -8,10 +8,9 @@ import com.gabodev.ecopacaanalyzer.ui.*
 import com.gabodev.ecopacaanalyzer.utils.orEmpty
 import com.gabodev.ecopacaanalyzer.viewmodel.AuthViewModel
 import com.gabodev.ecopacaanalyzer.viewmodel.PacaViewModel
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.savedstate.read
 
 @Composable
-@Preview
 fun App(viewModel: PacaViewModel, authViewModel: AuthViewModel) {
     val navController = rememberNavController()
     val authState = authViewModel.authState.collectAsState().value
@@ -70,7 +69,7 @@ fun App(viewModel: PacaViewModel, authViewModel: AuthViewModel) {
         }
 
         composable("readings/{deviceId}") { backStackEntry ->
-            val deviceId = backStackEntry.arguments?.getString("deviceId").orEmpty()
+            val deviceId = backStackEntry.arguments?.read { getStringOrNull("deviceId") }.orEmpty()
             ReadingsScreen(
                 viewModel = viewModel,
                 deviceId = deviceId,

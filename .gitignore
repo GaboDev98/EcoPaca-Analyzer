@@ -18,4 +18,4 @@ captures
 **/xcshareddata/WorkspaceSettings.xcsettings
 
 # Google services file
-/composeApp/google-services.json
+/androidApp/google-services.json
